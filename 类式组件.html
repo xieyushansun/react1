@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>类式组件</title>
+</head>
+<body>
+    <!-- 准备容器 -->
+    <div id="test"></div>
+<!--    <button id="btn1">按钮1</button>-->
+<!--    <button id="btn2">按钮2</button>-->
+<!--    <button id="btn3" onClick={demo}>按钮3</button>-->
+
+    <!-- 引入库 -->
+    <script type="text/javascript" src="js/react.development.js"></script>
+    <script type="text/javascript" src="js/react-dom.development.js"></script>
+    <script type="text/javascript" src="js/babel.min.js"></script>
+
+    <script type="text/babel">
+        class Weather extends React.Component{
+            constructor(props){
+                super(props);
+                this.state = {isHot:true, wind:"微风"};
+                // 使得changeWeather里的this指向Weather的实例对象
+                this.changeWeather = this.changeWeather.bind(this)
+            }
+            render(){ // 里面的this是实例对象
+                const{isHot} = this.state;
+                console.log(this);
+                return <h2 onClick={this.changeWeather}>类定义组件:今天天气很{this.state.isHot?"凉爽":"炎热"},{this.state.wind}</h2>
+            }
+            // react推荐使用
+            changeWeather() {
+                console.log("标题被点击了");
+                // 由于changeWeather是作为onClick的回调， 所以不是通过实例调用的，是直接调用
+                // 类中的方法默认开启了局部的严格模式，所以changeWeather中的this为undefined
+                // 注意：状态不可以直接更改！！！需要借助内置的API
+                const isHot = this.state.isHot;
+                // this.state.isHot = !isHot; 错误！
+                this.setState({isHot:!isHot})
+            }
+        }
+        ReactDOM.render(<Weather/>, document.getElementById("test"));
+
+        // const btn1 = document.getElementById('btn1');
+        // btn1.addEventListener('click', ()=>{
+        //     alert('按钮1被点击了')
+        // });
+        // const btn2 = document.getElementById('btn2');
+        // btn2.addEventListener('click', ()=>{
+        //     alert('按钮2被点击了')
+        // });
+
+    </script>
+</body>
+</html>
